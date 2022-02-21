@@ -1,0 +1,30 @@
+<mat-card class="occupy" style="background-color: whitesmoke;">
+
+    <mat-card-actions>
+      <button type="button" class="btn btn-warning" (click)="updateUser()">Submit</button>
+      <button type="button" class="btn btn-warning" style="margin-left: 10px;" (click)="cancel()">Cancel</button>
+    </mat-card-actions>
+  <mat-divider></mat-divider>
+  <br>
+  <mat-card-content>
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="FirstName">FirstName</label>
+              <input type="name" class="form-control" id="FirstName">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="LastName">LastName</label>
+              <input type="name" class="form-control" id="LastName">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="Email">Email</label>
+              <input type="email" class="form-control" id="Email" placeholder="abc@xyz">
+            </div>
+          </div>
+
+        </form>
+  </mat-card-content>
+</mat-card>

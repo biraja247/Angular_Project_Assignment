@@ -1,0 +1,23 @@
+<mat-card class="occupy" style="background-color: whitesmoke;">
+ 
+    <mat-card-actions>
+      <button type="button" class="btn btn-warning" (click)="updateProject()">Submit</button>
+      <button type="button" class="btn btn-warning" style="margin-left: 10px;" (click)="cancel()">Cancel</button>
+    </mat-card-actions>
+  <mat-divider></mat-divider>
+  <br>
+  <mat-card-content>
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="projectName">Project Name</label>
+              <input type="name" class="form-control" id="projectName">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="projectDetails">Project Details</label>
+              <input type="name" class="form-control" id="projectDetails">
+            </div>
+          </div>
+        </form>
+  </mat-card-content>
+</mat-card>

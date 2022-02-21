@@ -1,0 +1,43 @@
+<mat-card class="occupy" style="background-color: whitesmoke;">
+
+    <mat-card-actions>
+      <button type="button" class="btn btn-warning"  (click)="saveTask()">Save</button>
+ 
+      <button type="button" class="btn btn-warning" style="margin-left: 10px;"  (click)="cancel()">Cancel</button>
+    </mat-card-actions>
+    <mat-divider></mat-divider>
+    <br>
+    <mat-card-content>
+      <form>
+        <div class="row" >
+        <div style="float: left;"><mat-form-field appearance="fill">
+          <mat-label>Select Project</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let project of projectTasks" [value]="project.value">
+              {{project.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div style="float: right;">
+        <mat-form-field appearance="fill">
+          <mat-label>Assigned To</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let user of assignedUsers" [value]="user.value">
+              {{user.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="FirstName">Project Details</label>
+            <input type="name" class="form-control" id="FirstName">
+          </div>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>

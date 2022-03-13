@@ -1,49 +1,115 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Project } from 'src/app/models/Project.model ';
+import { UserTask } from 'src/app/models/Task.model ';
+import { TaskStatus } from 'src/app/models/TaskStatus.model';
+import { User } from 'src/app/models/User.model';
+import { ProjectService } from 'src/app/modules/project/services/project.service';
+import { SharedDataService } from 'src/app/modules/shared/services/shared-data.service';
+import { UserService } from 'src/app/modules/user/services/user.service';
+import { TaskService } from '../../services/task.service';
 
-export interface PeriodicElement {
-  id: number;
-  projectId: number;
-  status: number;
-  assignedTo: string;
-  taskDetails: string;
-  createdOn: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {id: 1, projectId: 1, status: 1, assignedTo: 'User1', taskDetails:'Task1', createdOn:'01-01-2022'},
-  {id: 2, projectId: 2, status: 2, assignedTo: 'User2', taskDetails:'Task2', createdOn:'02-01-2022'},
-  {id: 3, projectId: 3, status: 3, assignedTo: 'User3', taskDetails:'Task3', createdOn:'03-01-2022'},
-  {id: 4, projectId: 4, status: 1, assignedTo: 'User4', taskDetails:'Task4', createdOn:'04-01-2022'},
-  {id: 5, projectId: 5, status: 2, assignedTo: 'User5', taskDetails:'Task5', createdOn:'05-01-2022'},
-  {id: 6, projectId: 6, status: 3, assignedTo: 'User1', taskDetails:'Task6', createdOn:'06-01-2022'},
-];
 @Component({
   selector: 'app-show-tasks',
   templateUrl: './show-tasks.component.html',
-  styleUrls: ['./show-tasks.component.css']
+  styleUrls: ['./show-tasks.component.css'],
 })
-export class ShowTasksComponent implements OnInit {
+export class ShowTasksComponent implements OnInit, OnChanges {
+  tasks: UserTask[] = [];
+  updateTaskData = new UserTask();
 
-  constructor(private router: Router) { }
-  displayedColumns: string[] = ['id', 'projectId', 'status', 'assignedTo','taskDetails','createdOn'];
-  dataSource = ELEMENT_DATA;
-  clickedRows = new Set<PeriodicElement>();
+  projectList: Project[] = [];
+  userList: User[] = [];
+  
 
-  ngOnInit(): void {
+  subscription?: Subscription;
+  subscription2?: Subscription;
+  subscription3?: Subscription;
+
+  constructor(
+    private router: Router,
+    private taskService: TaskService,
+    private dataService: SharedDataService,
+    private userService: UserService,
+    private projectService: ProjectService,
+    private changeDetectorRefs: ChangeDetectorRef
+  ) {}
+  displayedColumns: string[] = [
+    'id',
+    'projectId',
+    'status',
+    'assignedToUserId',
+    'detail',
+    'createdOn',
+  ];
+
+  ngOnInit() {
+    this.getUserAndProjectList();
+    this.getAllTasks();
   }
 
-  addTask()
-  {
+  addTask() {
     this.router.navigate(['/home/task/create']);
   }
 
-  updateSelectedUserRows(position: any)
-  {
-    console.log(position);
-    this.router.navigate(['/home/task/update/'+position]);
+  ngOnChanges() {}
+
+  getAllTasks() {
+    this.taskService.getAllTaskDetails().subscribe((data) => {
+      this.tasks = data;
+      this.dataService.sendTaskListData(this.tasks);
+      this.changeDetectorRefs.detectChanges();
+    });
     
+  }
+
+  getUserAndProjectList() {
+    //this.subscription2 =
+    this.projectService.getAllProjectDetails().subscribe((data) => {
+      this.projectList = data;
+      this.dataService.sendProjectListData(this.projectList);
+      this.changeDetectorRefs.detectChanges();
+    });
+
+    //this.subscription3 =
+    this.userService.getAllUserDetails().subscribe((data) => {
+      this.userList = data;
+      this.dataService.sendUserListData(this.userList);
+      this.changeDetectorRefs.detectChanges();
+    });
 
   }
 
+  updateSelectedTaskRows(rowData: any) {
+    this.updateTaskData.id = rowData.id;
+    this.updateTaskData.AssignedToUserID = rowData.assignedToUserId;
+    this.updateTaskData.CreatedOn = rowData.createdOn;
+    this.updateTaskData.Detail = rowData.detail;
+    this.updateTaskData.ProjectID = rowData.projectId;
+    this.updateTaskData.Status = rowData.status;
+    this.dataService.sendTaskData(this.updateTaskData);
+    this.router.navigate(['/home/task/update/' + rowData.id]);
+  }
+
+  ngOnDestroy(): void {
+    this.changeDetectorRefs.detectChanges();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    if (this.subscription2) {
+      this.subscription2.unsubscribe();
+    }
+
+    if (this.subscription3) {
+      this.subscription3.unsubscribe();
+    }
+  }
 }
